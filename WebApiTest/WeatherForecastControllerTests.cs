@@ -36,8 +36,9 @@ namespace WebApiTest
                 new()
             });
 
-            var message = await CreateHttpClient(collection => collection.AddScoped(_ => service))
-                .GetAsync("/WeatherForecast");
+            ConfigureServices(collection => collection.AddScoped(_ => service));
+
+            var message = await CreateHttpClient().GetAsync("/WeatherForecast");
             var list = await message.Content.ReadAsAsync<List<WeatherForecast>>();
 
             message.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -13,41 +13,45 @@ namespace WebApiTest.CommonLib
     public class IntegrationTestBase
     {
         private WebApplicationFactory<Startup> _factory;
+        private WebApplicationFactory<Startup> _webHost;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void OneTimeSetUpBase()
         {
             _factory = new WebApplicationFactory<Startup>();
         }
 
         [OneTimeTearDown]
-        public void OneTimeTearDown()
+        public void OneTimeTearDownBase()
         {
             _factory.Dispose();
         }
 
-        protected HttpClient CreateHttpClient()
+        [SetUp]
+        public void SetUpBase()
         {
-            var webHost = _factory.WithWebHostBuilder(DefaultConfigureServices);
-            return webHost.CreateClient();
+            _webHost = _factory.WithWebHostBuilder(DefaultConfigureServices);
         }
 
-        protected HttpClient CreateHttpClient(Action<IServiceCollection> configureService)
+        protected HttpClient CreateHttpClient()
         {
-            var webHost = _factory.WithWebHostBuilder(builder =>
+            return _webHost.CreateClient();
+        }
+
+        protected void ConfigureServices(Action<IServiceCollection> configureService)
+        {
+            _webHost = _webHost.WithWebHostBuilder(builder =>
             {
-                DefaultConfigureServices(builder);
                 if (configureService is not null)
                 {
                     builder.ConfigureServices(configureService);
                 }
             });
-            return webHost.CreateClient();
         }
 
         private static void DefaultConfigureServices(IWebHostBuilder builder)
         {
-            builder.ConfigureAppConfiguration(configurationBuilder => 
+            builder.ConfigureAppConfiguration(configurationBuilder =>
                     configurationBuilder
                         .SetBasePath(Directory.GetCurrentDirectory())
                         .AddJsonFile("appsettings.IntegrationTest.json"))
