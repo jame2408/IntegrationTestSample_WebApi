@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using WebApi;
@@ -45,7 +47,11 @@ namespace WebApiTest.CommonLib
 
         private static void DefaultConfigureServices(IWebHostBuilder builder)
         {
-            builder.UseEnvironment("Test");
+            builder.ConfigureAppConfiguration(configurationBuilder => 
+                    configurationBuilder
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.IntegrationTest.json"))
+                .UseEnvironment("Test");
         }
     }
 }
