@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -44,7 +45,7 @@ namespace WebApiTest.CommonLib
             {
                 if (configureService is not null)
                 {
-                    builder.ConfigureServices(configureService);
+                    builder.ConfigureTestServices(configureService);
                 }
             });
         }
