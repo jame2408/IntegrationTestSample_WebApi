@@ -1,8 +1,8 @@
 using System;
 
-namespace WebApi
+namespace WebApi.Models.Weather.Response
 {
-    public class WeatherForecast
+    public class WeatherForecastResponse
     {
         public DateTime Date { get; set; }
 

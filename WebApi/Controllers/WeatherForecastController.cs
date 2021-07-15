@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebApi.Models.Weather.Response;
 using WebApi.Service;
+using WebApi.Service.Weather;
 
 namespace WebApi.Controllers
 {
@@ -18,7 +20,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<WeatherForecastResponse> Get()
         {
             return _service.WeatherForecasts();
         }

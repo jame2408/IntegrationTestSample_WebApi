@@ -6,7 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.Database;
+using WebApi.Repository.Movie;
 using WebApi.Service;
+using WebApi.Service.Movie;
+using WebApi.Service.Weather;
 
 namespace WebApi
 {
@@ -28,6 +31,8 @@ namespace WebApi
             });
 
             services.AddScoped<IWeatherForecastService, WeatherForecastService>();
+            services.AddScoped<IMovieService, MovieService>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
             
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebApi", Version = "v1"}); });
