@@ -15,10 +15,14 @@ namespace WebApi.Service.Movie
         }
         public IEnumerable<MovieResponse> GetRestrictedMovies()
         {
-            return _movieRepository
+            var restrictedMovies = _movieRepository
                 .GetAll()
-                .Where(p => p.Rating == (int) MovieRatingEnum.Restricted)
-                .Select(s => new MovieResponse(s));
+                .Where(p => p.Rating == (int) MovieRatingEnum.Restricted);
+
+            return restrictedMovies.Select(s => new MovieResponse()
+            {
+                Name = s.Name
+            });
         }
     }
 

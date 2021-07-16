@@ -6,9 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
-using WebApi;
 using WebApi.Models.Weather.Response;
-using WebApi.Service;
 using WebApi.Service.Weather;
 using WebApiTest.CommonLib;
 
