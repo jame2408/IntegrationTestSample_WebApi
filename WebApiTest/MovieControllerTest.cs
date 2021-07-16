@@ -8,6 +8,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using WebApi.Models.Movie.Response;
 using WebApiTest.CommonLib;
+using WebApiTest.DatabaseConfig;
 
 namespace WebApiTest
 {
@@ -17,7 +18,7 @@ namespace WebApiTest
         [Test]
         public async Task GetRestrictedMovies()
         {
-            base.MovieDbConfig();
+            base.DbContextConfig(DatabaseEnum.Movie);
 
             var message = await base.CreateHttpClient().PostAsync("/Movie/Restricted",
                 new StringContent("", Encoding.UTF8, "application/json"));
