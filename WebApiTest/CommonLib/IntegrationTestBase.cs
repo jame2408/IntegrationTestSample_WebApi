@@ -7,7 +7,9 @@ using NUnit.Framework;
 using System;
 using System.IO;
 using System.Net.Http;
+using Microsoft.EntityFrameworkCore;
 using WebApi;
+using WebApi.Database;
 using WebApiTest.DatabaseConfig;
 
 namespace WebApiTest.CommonLib
@@ -58,13 +60,31 @@ namespace WebApiTest.CommonLib
         /// <summary>
         /// 抽換資料庫與相關設定
         /// </summary>
-        /// <param name="database"></param>
-        protected void DbContextConfig(DatabaseEnum database)
+        protected void DbContextConfig<TSource>() where TSource : DbContext
         {
             _webHost = _webHost.WithWebHostBuilder(builder =>
             {
-                builder.ConfigureServices(services => services.CreateTestDbContextFactory(database));
+                builder.ConfigureServices(services => services.CreateTestDbContext<TSource>());
             });
+        }
+
+        /// <summary>
+        /// 資料庫操作
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="action"></param>
+        protected void DbOperator<TSource>(Action<TSource> action) where TSource : DbContext
+        {
+            using var serviceScope = _webHost.Services.CreateScope();
+            var dbContext = serviceScope.ServiceProvider.GetRequiredService<TSource>();
+
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
+            action(dbContext);
+
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
         }
 
         private static void DefaultConfigureServices(IWebHostBuilder builder)
