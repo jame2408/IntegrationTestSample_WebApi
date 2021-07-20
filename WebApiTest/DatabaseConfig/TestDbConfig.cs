@@ -23,7 +23,7 @@ namespace WebApiTest.DatabaseConfig
         private static ServiceProvider ChangeTestDbContext<TSource>(this IServiceCollection services)
             where TSource : DbContext
         {
-            // Remove the app's MovieDbContext registration.
+            // Remove the app's DbContext registration.
             var descriptor =
                 services.SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<TSource>));
             if (descriptor is not null)
@@ -31,7 +31,7 @@ namespace WebApiTest.DatabaseConfig
                 services.Remove(descriptor);
             }
 
-            // Add MovieDbContext using an in-memory database for testing.
+            // Add DbContext using an in-memory database for testing.
             services.AddDbContext<TSource>(options => { options.UseInMemoryDatabase(nameof(TSource)); });
 
             // Build the service provider.
