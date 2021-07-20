@@ -9,7 +9,6 @@ using System.IO;
 using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
 using WebApi;
-using WebApi.Database;
 using WebApiTest.DatabaseConfig;
 
 namespace WebApiTest.CommonLib
@@ -78,13 +77,15 @@ namespace WebApiTest.CommonLib
             using var serviceScope = _webHost.Services.CreateScope();
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<TSource>();
 
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
-
             action(dbContext);
+        }
+
+        protected void DbClean<TSource>() where TSource : DbContext
+        {
+            using var serviceScope = _webHost.Services.CreateScope();
+            var dbContext = serviceScope.ServiceProvider.GetRequiredService<TSource>();
 
             dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
         }
 
         private static void DefaultConfigureServices(IWebHostBuilder builder)
