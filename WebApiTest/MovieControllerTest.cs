@@ -20,7 +20,7 @@ namespace WebApiTest
         public async Task GetRestrictedMovies()
         {
             base.DbContextConfig<MovieDbContext>();
-            base.DbOperator<MovieDbContext>(context => { new MovieTestDbData().DefaultMovies(context); });
+            base.DbOperator<MovieDbContext>(context => { new MovieTestDbData().AddDefaultMovies(context); });
 
             var message = await base.CreateHttpClient().PostAsync("/Movie/Restricted",
                 new StringContent("", Encoding.UTF8, "application/json"));
