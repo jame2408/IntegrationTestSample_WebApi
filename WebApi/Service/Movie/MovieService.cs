@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WebApi.Controllers;
+using WebApi.Models.Movie.Request;
 using WebApi.Models.Movie.Response;
 using WebApi.Repository.Movie;
 
@@ -23,6 +25,11 @@ namespace WebApi.Service.Movie
             {
                 Name = s.Name
             });
+        }
+
+        public int AddMovie(AddMovieRequest request)
+        {
+            return _movieRepository.Add(request);
         }
     }
 
