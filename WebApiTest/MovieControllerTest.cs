@@ -7,11 +7,17 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
+using WebApi.Controllers;
 using WebApi.Database;
 using WebApi.Models.Movie.Request;
 using WebApi.Models.Movie.Response;
+using WebApi.Repository.Movie;
+using WebApi.Service.Movie;
 using WebApiTest.CommonLib;
 using WebApiTest.DatabaseConfig.Movie;
+using WebApiTest.SeedData.Movie;
 
 namespace WebApiTest
 {
@@ -55,6 +61,31 @@ namespace WebApiTest
             var restrictedMovies = await message.Content.ReadAsAsync<List<MovieResponse>>();
 
             message.StatusCode.Should().Be(HttpStatusCode.OK);
+            restrictedMovies.Select(s => s.Name).Should().BeEquivalentTo(
+                "死亡漩渦：奪魂鋸新遊戲", "詭屋", "德州電鋸殺人狂");
+        }
+
+        [Test]
+        public async Task GetRestrictedMovies_StubRepository()
+        {
+            var repository = Substitute.For<IMovieRepository>();
+            repository.GetAll().Returns(MoviesEntities.DefaultMoviesEntity());
+
+            #region 寫法一：直接打 API
+            //ConfigureServices(service => service.AddScoped(_ => repository));
+
+            //var message = await base.CreateHttpClient().PostAsync("/Movie/Restricted",
+            //    new StringContent("", Encoding.UTF8, "application/json"));
+            //var restrictedMovies = await message.Content.ReadAsAsync<List<MovieResponse>>();
+
+            //message.StatusCode.Should().Be(HttpStatusCode.OK);
+            #endregion
+
+            #region 寫法二：new Controller
+            var movieController = new MovieController(new MovieService(repository));
+            var restrictedMovies = movieController.GetRestrictedMovies();
+            #endregion
+
             restrictedMovies.Select(s => s.Name).Should().BeEquivalentTo(
                 "死亡漩渦：奪魂鋸新遊戲", "詭屋", "德州電鋸殺人狂");
         }
